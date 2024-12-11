@@ -66,6 +66,9 @@ class UI:
                     except ValueError as v:
                         print("\n" + str(v))
                         continue
+                    except IndexError as ie:
+                        print("\nInvalid command. Please input a command in the format: row column. " + str(ie))
+                        continue
                 except ValueError:
                     print("\nInvalid command. Please input a command in the format: row column.\n")
                     continue
