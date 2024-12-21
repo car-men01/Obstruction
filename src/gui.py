@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import sys
 from board import Board
@@ -35,85 +37,139 @@ class ObstructionGame:
         """Draw the title of the game, centered at the top."""
         # Dynamically calculate the center based on current window size
         window_width = self.screen.get_width()
-        title_text = "Welcome to Obstruction"
+        title_text = "Welcome to Obstruction!"
         rendered_title = self.title_font.render(title_text, True, (0, 0, 0))
         title_rect = rendered_title.get_rect(center=(window_width // 2, 80))
         self.screen.blit(rendered_title, title_rect)
 
-    # def draw_main_menu(self, clicked_button=None):
-    #     """Draw the main menu with board size and difficulty selection."""
-    #     self.screen.fill((255, 255, 255))
-    #     self.draw_title()
-    #
-    #     # Get current window dimensions for dynamic positioning
-    #     window_width = self.screen.get_width()
-    #     window_height = self.screen.get_height()
-    #     margin = window_width // 8
-    #     button_width, button_height = 100, 50
-    #
-    #     # Draw board size options
-    #     self.draw_text("Choose Board Size:", margin, 215, (0, 0, 0))
-    #     for i, size in enumerate(range(4, 9)):
-    #         button_x = margin + 300 + i * (button_width + 10)
-    #         button_y = 200
-    #         color = (200, 200, 200)
-    #         if clicked_button == f"size_{size}":
-    #             color = (150, 150, 250)  # Highlight color
-    #         pygame.draw.rect(self.screen, color, (button_x, button_y, button_width, button_height))
-    #         self.draw_text(f"{size}x{size}", button_x + button_width // 2, button_y + button_height // 2, (0, 0, 0),
-    #                        center=True)
-    #
-    #     # Draw difficulty options
-    #     self.draw_text("Choose Difficulty:", margin, 315, (0, 0, 0))
-    #     difficulties = ["Easy", "Hard"]
-    #     for i, diff in enumerate(difficulties):
-    #         button_x = margin + 300 + i * (button_width + 10)
-    #         button_y = 300
-    #         color = (200, 200, 200)
-    #         if clicked_button == f"difficulty_{diff.lower()}":
-    #             color = (150, 250, 150)  # Highlight color
-    #         pygame.draw.rect(self.screen, color, (button_x, button_y, button_width, button_height))
-    #         self.draw_text(diff, button_x + button_width // 2, button_y + button_height // 2, (0, 0, 0), center=True)
-    #
-    #     # Draw "Let's Play!" button
-    #     button_x = window_width // 2 - 100
-    #     button_y = window_height - 150
-    #     button_color = (100, 255, 100) if clicked_button == "play" else (200, 200, 200)
-    #     pygame.draw.rect(self.screen, button_color, (button_x, button_y, 200, 80))
-    #     self.draw_text("Let's Play!", button_x + 100, button_y + 40, (0, 0, 0), center=True)
-    #
-    #     pygame.display.flip()
+    def draw_menu_background(self):
+        """Draws a resizable pixelated background with flowers, grass, sun, and clouds."""
+        window_width = self.screen.get_width()
+        window_height = self.screen.get_height()
+        self.screen.fill((255, 255, 204))
+
+        # Grass Area (Bottom of the Screen)
+        grass_height = window_height // 4
+
+        c = 4
+        for x in range(0, window_width, 20):
+            if c == 4:
+                for y in range(window_height - grass_height - 60, window_height - grass_height, 20):
+                    pygame.draw.rect(self.screen, (63, 210, 63), (x, y, 20, 20))  # Green grass
+            if c == 3 or c == 1:
+                for y in range(window_height - grass_height - 40, window_height - grass_height, 20):
+                    pygame.draw.rect(self.screen, (63, 210, 63), (x, y, 20, 20))  # Green grass
+            if c == 2:
+                pygame.draw.rect(self.screen, (63, 210, 63), (x, window_height - grass_height - 20, 20, 20))  # Green grass
+            c -= 1
+            if c == 0:
+                c = 4
+
+        for x in range(0, window_width, 20):
+            for y in range(window_height - grass_height, window_height, 20):
+                pygame.draw.rect(self.screen, (63, 210, 63), (x, y, 20, 20))  # Green grass
+
+        # Flower 1: Pink Flower (Left Side)
+        flower1_x = 120  # X-coordinate for flower 1
+        flower1_y = window_height - grass_height - 200  # Y-coordinate for flower top
+
+        # Stem
+        for y in range(flower1_y + 40, window_height - grass_height - 20, 20):
+            pygame.draw.rect(self.screen, (34, 139, 34), (flower1_x, y, 20, 20))  # Green stem
+            # pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x, y, 20, 20), 1)  # Outline
+
+        # Leaves
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower1_x - 20, flower1_y + 80, 20, 20))  # Left leaf
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower1_x + 20, flower1_y + 100, 20, 20))  # Right leaf
+        # pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x - 20, flower1_y + 80, 20, 20),
+        #                  1)  # Outline for left leaf
+        # pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x + 20, flower1_y + 100, 20, 20),
+        #                  1)  # Outline for right leaf
+
+        # Center
+        pygame.draw.rect(self.screen, (255, 255, 0), (flower1_x, flower1_y, 20, 20))  # Yellow center
+        pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x, flower1_y, 20, 20), 1)  # Outline
+
+        # Petals
+        petal_offsets = [(-20, -20), (20, -20), (-20, 20), (20, 20), (0, -40), (0, 40), (20, 0), (-40, 0), (40, 0), (-20, 0), (0, 20), (0, -20)]
+        for offset in petal_offsets:
+            petal_x = flower1_x + offset[0]
+            petal_y = flower1_y + offset[1]
+            pygame.draw.rect(self.screen, (255, 105, 180), (petal_x, petal_y, 20, 20))  # Pink petal
+            # pygame.draw.rect(self.screen, (0, 0, 0), (petal_x, petal_y, 20, 20), 1)  # Outline
+
+        # Flower 2: Red Flower (Right Side)
+        flower2_x = window_width - 120  # X-coordinate for flower 2
+        flower2_y = window_height - grass_height - 200  # Y-coordinate for flower top
+
+        # Stem
+        for y in range(flower2_y + 40, window_height - grass_height - 20, 20):
+            pygame.draw.rect(self.screen, (34, 139, 34), (flower2_x, y, 20, 20))  # Green stem
+
+        # Leaves
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower2_x - 20, flower2_y + 80, 20, 20))  # Left leaf
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower2_x + 20, flower2_y + 100, 20, 20))  # Right leaf
+
+        # Center
+        pygame.draw.rect(self.screen, (255, 255, 0), (flower2_x, flower2_y, 20, 20))  # Yellow center
+        pygame.draw.rect(self.screen, (0, 0, 0), (flower2_x, flower2_y, 20, 20), 1)  # Outline
+
+        # Petals
+        for offset in petal_offsets:
+            petal_x = flower2_x + offset[0]
+            petal_y = flower2_y + offset[1]
+            pygame.draw.rect(self.screen, (255, 0, 0), (petal_x, petal_y, 20, 20))  # Red petal
+
+
+        # Sun (Top-right Corner)
+        sun_size = window_width // 15
+        sun_x = window_width - sun_size - 35
+        sun_y = 20
+        for x in range(sun_x, sun_x + sun_size, 20):
+            for y in range(sun_y, sun_y + sun_size, 20):
+                pygame.draw.rect(self.screen, (255, 223, 0), (x, y, 20, 20))  # Yellow sun
+
+
+        # # Clouds (Top-left Corner)
+        # cloud_start_x = 50
+        # cloud_start_y = 50
+        # for offset in [(0, 0), (20, 0), (40, 0), (10, 20), (30, 20)]:
+        #     x = cloud_start_x + offset[0]
+        #     y = cloud_start_y + offset[1]
+        #     pygame.draw.rect(self.screen, (255, 255, 255), (x, y, 20, 20))  # White cloud
 
     def draw_main_menu(self, clicked_button=None):
         """Draw the main menu with board size and difficulty selection."""
-        self.screen.fill((255, 255, 255))
+        # self.screen.fill((255, 255, 255))
+        self.draw_menu_background()
         self.draw_title()
 
         # Get current window dimensions for dynamic positioning
         window_width = self.screen.get_width()
         window_height = self.screen.get_height()
-        margin = window_width // 8
+        margin_x = window_width // 6
+        margin_y = window_height // 3
         button_width, button_height = 100, 50
 
         # Draw board size options
-        self.draw_text("Choose Board Size:", margin, 215, (0, 0, 0))
+        self.draw_text("Choose Board Size:", margin_x, margin_y, (0, 0, 0))
         for i, size in enumerate(range(4, 9)):
-            button_x = margin + 300 + i * (button_width + 10)
-            button_y = 200
+            button_x = margin_x + 300 + i * (button_width + 10)
+            button_y = margin_y - 10
             # Highlight the selected board size
-            color = (150, 150, 250) if self.selected_board_size == size else (200, 200, 200)
+            color = (252, 155, 242) if self.selected_board_size == size else (200, 200, 200)
             pygame.draw.rect(self.screen, color, (button_x, button_y, button_width, button_height))
             self.draw_text(f"{size}x{size}", button_x + button_width // 2, button_y + button_height // 2, (0, 0, 0),
                            center=True)
 
         # Draw difficulty options
-        self.draw_text("Choose Difficulty:", margin, 315, (0, 0, 0))
+        self.draw_text("Choose Difficulty:", margin_x, margin_y + 100, (0, 0, 0))
         difficulties = ["easy", "hard"]
         for i, diff in enumerate(difficulties):
-            button_x = margin + 300 + i * (button_width + 10)
-            button_y = 300
+            button_x = margin_x + 300 + i * (button_width + 10)
+            button_y = margin_y + 100 - 10
             # Highlight the selected difficulty
-            color = (150, 250, 150) if self.selected_difficulty == diff else (200, 200, 200)
+            color = (255, 117, 117) if self.selected_difficulty == diff else (200, 200, 200)
             pygame.draw.rect(self.screen, color, (button_x, button_y, button_width, button_height))
             self.draw_text(diff.capitalize(), button_x + button_width // 2, button_y + button_height // 2, (0, 0, 0),
                            center=True)
@@ -131,46 +187,6 @@ class ObstructionGame:
         """Recalculate positions after a resize event."""
         # Re-render the main menu with new dimensions
         self.draw_main_menu()
-
-    # def handle_main_menu_events(self):
-    #     """Handle clicks on the main menu."""
-    #     window_width = self.screen.get_width()
-    #     window_height = self.screen.get_height()
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             sys.exit()
-    #         elif event.type == pygame.MOUSEBUTTONDOWN:
-    #             x, y = event.pos
-    #
-    #             # Check board size selection
-    #             for i, size in enumerate(range(4, 9)):
-    #                 button_x = 200 + 300 + i * (100 + 10)
-    #                 button_y = 200
-    #                 if button_x <= x <= button_x + 100 and button_y <= y <= button_y + 50:
-    #                     self.board_size = size
-    #                     self.draw_main_menu(clicked_button=f"size_{size}")
-    #                     return False  # Continue displaying menu
-    #
-    #             # Check difficulty selection
-    #             difficulties = ["easy", "hard"]
-    #             for i, diff in enumerate(difficulties):
-    #                 button_x = 200 + 300 + i * (100 + 10)
-    #                 button_y = 300
-    #                 if button_x <= x <= button_x + 100 and button_y <= y <= button_y + 50:
-    #                     self.difficulty = diff.lower()
-    #                     self.draw_main_menu(clicked_button=f"difficulty_{diff.lower()}")
-    #                     return False  # Continue displaying menu
-    #
-    #             # Check "Let's Play!" button
-    #             button_x = window_width // 2 - 100
-    #             button_y = window_height - 150
-    #             if button_x <= x <= button_x + 200 and button_y <= y <= button_y + 80:
-    #                 self.draw_main_menu(clicked_button="play")
-    #                 pygame.time.wait(200)
-    #                 return True  # Proceed to game
-    #
-    #     return False
 
     def handle_main_menu_events(self):
         """Handle clicks on the main menu."""
@@ -228,7 +244,7 @@ class ObstructionGame:
         """Draw the game board and UI elements."""
         window_width = self.screen.get_width()
         window_height = self.screen.get_height()
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((255, 255, 204))
 
         # Title
         title = f"You are playing on a {self.board_size} x {self.board_size} board, difficulty: {self.difficulty}"
@@ -252,15 +268,62 @@ class ObstructionGame:
                 elif symbol == '/':
                     self.draw_text('/', rect.centerx, rect.centery, (0, 255, 0), center=True)
 
-        # Decorative flowers
-        # for _ in range(10):
-        #     flower_x = randint(0, board_start_x - 50)
-        #     flower_y = randint(0, self.WINDOW_HEIGHT)
-        #     pygame.draw.circle(self.screen, (255, 0, 255), (flower_x, flower_y), 20)
-        # for _ in range(10):
-        #     flower_x = randint(board_start_x + self.CELL_SIZE * self.board_size + 50, self.WINDOW_WIDTH)
-        #     flower_y = randint(0, self.WINDOW_HEIGHT)
-        #     pygame.draw.circle(self.screen, (255, 0, 255), (flower_x, flower_y), 20)
+        # Flower 1: Pink Flower (Left Side)
+        flower1_x = 120  # X-coordinate for flower 1
+        flower1_y = window_height - 200  # Y-coordinate for flower top
+
+        # Stem
+        for y in range(flower1_y + 40, window_height - 20, 20):
+            pygame.draw.rect(self.screen, (34, 139, 34), (flower1_x, y, 20, 20))  # Green stem
+            # pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x, y, 20, 20), 1)  # Outline
+
+        # Leaves
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower1_x - 20, flower1_y + 80, 20, 20))  # Left leaf
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower1_x + 20, flower1_y + 100, 20, 20))  # Right leaf
+        # pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x - 20, flower1_y + 80, 20, 20),
+        #                  1)  # Outline for left leaf
+        # pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x + 20, flower1_y + 100, 20, 20),
+        #                  1)  # Outline for right leaf
+
+        # Center
+        pygame.draw.rect(self.screen, (255, 255, 0), (flower1_x, flower1_y, 20, 20))  # Yellow center
+        pygame.draw.rect(self.screen, (0, 0, 0), (flower1_x, flower1_y, 20, 20), 1)  # Outline
+
+        # Petals
+        petal_offsets = [(-20, -20), (20, -20), (-20, 20), (20, 20), (0, -40), (0, 40), (20, 0), (-40, 0), (40, 0),
+                         (-20, 0), (0, 20), (0, -20)]
+        for offset in petal_offsets:
+            petal_x = flower1_x + offset[0]
+            petal_y = flower1_y + offset[1]
+            pygame.draw.rect(self.screen, (255, 105, 180), (petal_x, petal_y, 20, 20))  # Pink petal
+            # pygame.draw.rect(self.screen, (0, 0, 0), (petal_x, petal_y, 20, 20), 1)  # Outline
+
+        # Flower 2: Red Flower (Right Side)
+        flower2_x = window_width - 120  # X-coordinate for flower 2
+        flower2_y = window_height - 200  # Y-coordinate for flower top
+
+        # Stem
+        for y in range(flower2_y + 40, window_height - 20, 20):
+            pygame.draw.rect(self.screen, (34, 139, 34), (flower2_x, y, 20, 20))  # Green stem
+
+        # Leaves
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower2_x - 20, flower2_y + 80, 20, 20))  # Left leaf
+        pygame.draw.rect(self.screen, (34, 139, 34), (flower2_x + 20, flower2_y + 100, 20, 20))  # Right leaf
+
+        # Center
+        pygame.draw.rect(self.screen, (255, 255, 0), (flower2_x, flower2_y, 20, 20))  # Yellow center
+        pygame.draw.rect(self.screen, (0, 0, 0), (flower2_x, flower2_y, 20, 20), 1)  # Outline
+
+        # Petals
+        for offset in petal_offsets:
+            petal_x = flower2_x + offset[0]
+            petal_y = flower2_y + offset[1]
+            pygame.draw.rect(self.screen, (255, 0, 0), (petal_x, petal_y, 20, 20))  # Red petal
+
+
+        for x in range(0, window_width, 20):
+            pygame.draw.rect(self.screen, (63, 210, 63), (x, window_height - 20, 20, 20))  # Green grass
+
 
         pygame.display.flip()
 
@@ -292,6 +355,50 @@ class ObstructionGame:
                 except ValueError:
                     pass
 
+    def display_victory_screen(self, message):
+        """Show a victory screen with confetti."""
+        confetti = []  # Store confetti particles
+        self.screen.fill((255, 255, 204))
+        window_width = self.screen.get_width()
+        window_height = self.screen.get_height()
+        clock = pygame.time.Clock()
+
+        # Generate initial confetti
+        for _ in range(100):  # Adjust number of confetti particles
+            confetti.append({
+                "x": random.randint(0, window_width),
+                "y": random.randint(-window_height, 0),
+                "color": (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
+                "speed": random.randint(2, 7),
+                "size": random.randint(5, 15),
+            })
+
+        # Victory screen loop
+        start_time = pygame.time.get_ticks()
+        while pygame.time.get_ticks() - start_time < 5000:  # Show for 5 seconds
+            self.screen.fill((255, 255, 204))
+
+            # Draw the victory message
+            large_font = pygame.font.Font(None, 100)
+            rendered_text = large_font.render(message, True, (0, 0, 0))
+            text_rect = rendered_text.get_rect(center=(window_width // 2, window_height // 2))
+            self.screen.blit(rendered_text, text_rect)
+
+            # Update and draw confetti
+            for particle in confetti:
+                pygame.draw.rect(
+                    self.screen,
+                    particle["color"],
+                    (particle["x"], particle["y"], particle["size"], particle["size"])
+                )
+                particle["y"] += particle["speed"]  # Move confetti down
+                if particle["y"] > window_height:  # Reset confetti to the top
+                    particle["y"] = random.randint(-window_height, 0)
+                    particle["x"] = random.randint(0, window_width)
+                    particle["color"] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
+            pygame.display.flip()
+            clock.tick(30)
 
     def run_game(self):
         """Main game loop."""
@@ -319,10 +426,7 @@ class ObstructionGame:
 
                     # Display the win/lose message
                     message = "You Win!" if status == "human" else "Computer Wins!"
-                    self.draw_text(message, window_width // 2, window_height // 2, (0, 0, 0), center=True)
-
-                    pygame.display.flip()  # Update the display
-                    pygame.time.wait(3000)  # Pause for 3 seconds
+                    self.display_victory_screen(message)
                     pygame.quit()
                     sys.exit()
 
@@ -337,11 +441,6 @@ class ObstructionGame:
 
     def main(self):
         """Run the game."""
-        # while True:
-        #     self.draw_main_menu()
-        #     if self.handle_main_menu_events():
-        #         self.setup_game()
-        #         self.run_game()
 
         while True:
             for event in pygame.event.get():
