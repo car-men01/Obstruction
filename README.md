@@ -9,6 +9,6 @@ The **GUI** was made using the pygame library and the user can play the game wit
 ## Minimax AI algorithm
 The minimax algorithm is a decision making algorithm, which computes all the possible moves with the computer being the maximizer and the user being the minimizer. The computer updates the board by assuming that the user plays as good as he can and gets all possible outcomes, from which he chooses the one with the best outcome for the maximizer.\ 
 For my algorithm I used:
-- _depth factor_ - Limits how many moves ahead the AI looks by rewarding faster wins and penalazing slower losses. Lower depth = faster but less strategic. Higher depth = more strategic but slower.\
-- _alpha-beta pruning_ - Prunes the remaining branches when beta <= alpha, meaning that we don't need to check them anymore. Alpha: The best score that the maximizer (computer) is guaranteed so far. Beta: The best score that the minimizer (user) is guaranteed so far.\
+- _depth factor_ - Limits how many moves ahead the AI looks by rewarding faster wins and penalazing slower losses. Lower depth = faster but less strategic. Higher depth = more strategic but slower.
+- _alpha-beta pruning_ - Prunes the remaining branches when beta <= alpha, meaning that we don't need to check them anymore. Alpha: The best score that the maximizer (computer) is guaranteed so far. Beta: The best score that the minimizer (user) is guaranteed so far.
 - _heuristic evaluation_ - Prioritizes the center and blocks human's potential moves.
