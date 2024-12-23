@@ -12,3 +12,9 @@ For my algorithm I used:
 - _depth factor_ - Limits how many moves ahead the AI looks by rewarding faster wins and penalazing slower losses. Lower depth = faster but less strategic. Higher depth = more strategic but slower.
 - _alpha-beta pruning_ - Prunes the remaining branches when beta <= alpha, meaning that we don't need to check them anymore. Alpha: The best score that the maximizer (computer) is guaranteed so far. Beta: The best score that the minimizer (user) is guaranteed so far.
 - _heuristic evaluation_ - Prioritizes the center and blocks human's potential moves.
+## Screenshots
+![image](https://github.com/user-attachments/assets/ec3005e8-cbbe-4f92-8239-0818b43b2340)
+![image](https://github.com/user-attachments/assets/7ebef392-a646-4525-9d95-b9bb772c5fb0)
+![image](https://github.com/user-attachments/assets/fc4b5814-56e6-4ba7-b8b0-3cbe14db4b7f)
+### Observations
+When trying to play on hard mode on a board bigger than 6x6 the AI takes a really long time thinking its move, so I recommend trying to play on 7x7 and 8x8 only in easy mode.
